@@ -1,0 +1,483 @@
+'use client';
+import React, { useState, useRef } from 'react';
+import Link from 'next/link';
+
+interface SubItem {
+  category: string;
+  items: { name: string; path: string }[];
+}
+
+interface DropdownItem {
+  name: string;
+  path: string;
+  description: string;
+  subItems: SubItem[];
+}
+
+interface NavItem {
+  name: string;
+  path: string;
+  hasDropdown?: boolean;
+  dropdownItems?: DropdownItem[];
+}
+
+const MegaMenu = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [expandedMobileItems, setExpandedMobileItems] = useState<Record<string, boolean>>({});
+  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const toggleMobileItem = (itemName: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setExpandedMobileItems(prev => ({
+      ...prev,
+      [itemName]: !prev[itemName]
+    }));
+  };
+
+  const handleMouseEnter = (menuName: string) => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+    }
+    setActiveDropdown(menuName);
+  };
+
+  const handleMouseLeave = () => {
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 150);
+  };
+
+  const closeDropdown = () => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+    }
+    setActiveDropdown(null);
+  };
+
+
+  const navItems = [
+    { name: 'About Us', path: '/about' },
+    {
+      name: 'Treatments',
+      path: '/treatments',
+      hasDropdown: true,
+      dropdownItems: [
+        {
+          name: 'Skin Treatments',
+          path: '/treatments/skin-treatments',
+          description: 'Advanced skin care & rejuvenation',
+          subItems: [
+            {
+              category: 'Face Rejuvenation',
+              items: [
+                { name: 'HydraFacial', path: '/treatments/skin-treatments/face-rejuvenation/hydra-facial' },
+                { name: 'Chemical Peel', path: '/treatments/skin-treatments/face-rejuvenation/chemical-peel' },
+                { name: 'Carbon Facial', path: '/treatments/skin-treatments/face-rejuvenation/carbon-facial' }
+              ]
+            },
+            {
+              category: 'Anti-Ageing',
+              items: [
+                { name: 'Botox', path: '/treatments/skin-treatments/anti-ageing/botox' },
+                { name: 'Fillers', path: '/treatments/skin-treatments/anti-ageing/fillers' },
+                { name: 'HIFU', path: '/treatments/skin-treatments/anti-ageing/hifu' }
+              ]
+            },
+            {
+              category: 'Skin Concerns',
+              items: [
+                { name: 'Acne', path: '/treatments/skin-treatments/skin-concerns/acne' },
+                { name: 'Pigmentation & Melasma', path: '/treatments/skin-treatments/skin-concerns/pigmentation' },
+                { name: 'Melasma', path: '/treatments/skin-treatments/skin-concerns/melasma' },
+                { name: 'Mole', path: '/treatments/skin-treatments/skin-concerns/mole' },
+                { name: 'Warts', path: '/treatments/skin-treatments/skin-concerns/warts' },
+                { name: 'Psoriasis', path: '/treatments/skin-treatments/skin-concerns/psoriasis' },
+                { name: 'Eczema', path: '/treatments/skin-treatments/skin-concerns/eczema' },
+                { name: 'Urticaria', path: '/treatments/skin-treatments/skin-concerns/urticaria' },
+                { name: 'White Spots', path: '/treatments/skin-treatments/skin-concerns/white-spots' },
+                { name: 'Fungal Infection', path: '/treatments/skin-treatments/skin-concerns/fungal-infection' },
+                { name: 'Scabies', path: '/treatments/skin-treatments/skin-concerns/scabies' },
+                { name: 'Freckles', path: '/treatments/skin-treatments/skin-concerns/freckles' }
+              ]
+            },
+            {
+              category: 'Glow Skin Health',
+              items: [
+                { name: 'Glutathione Therapy', path: '/treatments/skin-treatments/glow-skin-health/glutathione-therapy' }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Hair Treatments',
+          path: '/treatments/hair-treatments',
+          description: 'Hair restoration & regrowth solutions',
+          subItems: [
+            {
+              category: 'Hair Loss',
+              items: [
+                { name: 'Hair Transplant', path: '/treatments/hair-treatments/hair-loss/hair-transplant' },
+                { name: 'Beard Transplant', path: '/treatments/hair-treatments/hair-loss/beard-transplant' },
+                { name: 'Eyebrow Transplant', path: '/treatments/hair-treatments/hair-loss/eyebrow-transplant' }
+              ]
+            },
+            {
+              category: 'Therapies',
+              items: [
+                { name: 'PRP', path: '/treatments/hair-treatments/therapies/prp' },
+                { name: 'GFC PRP', path: '/treatments/hair-treatments/therapies/gfc-prp' },
+                { name: 'Mesotherapy', path: '/treatments/hair-treatments/therapies/mesotherapy' },
+                { name: 'LLLT', path: '/treatments/hair-treatments/therapies/lllt' },
+                { name: 'Medical Therapy', path: '/treatments/hair-treatments/therapies/medical-therapy' }
+              ]
+            },
+            {
+              category: 'Scalp Care',
+              items: [
+                { name: 'Dandruff', path: '/treatments/hair-treatments/scalp-care/dandruff' }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Laser Treatments',
+          path: '/treatments/laser-treatments',
+          description: 'Laser hair removal & skin procedures',
+          subItems: [
+            {
+              category: 'Hair Removal',
+              items: [
+                { name: 'Laser Hair Reduction', path: '/treatments/laser-treatments/hair-removal/laser-hair-reduction' }
+              ]
+            },
+            {
+              category: 'Skin Concerns',
+              items: [
+                { name: 'Laser Acne', path: '/treatments/laser-treatments/skin-concerns/laser-acne' },
+                { name: 'Laser Scar', path: '/treatments/laser-treatments/skin-concerns/laser-scar' },
+                { name: 'Laser Birthmark', path: '/treatments/laser-treatments/skin-concerns/laser-birthmark' }
+              ]
+            },
+            {
+              category: 'Advanced Laser',
+              items: [
+                { name: 'Tattoo Removal', path: '/treatments/laser-treatments/advanced-laser/tattoo-removal' },
+                { name: 'Skin Tightening', path: '/treatments/laser-treatments/advanced-laser/skin-tightening' }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: 'Plastic Surgery',
+      path: '/plastic-surgery',
+      hasDropdown: true,
+      dropdownItems: [
+        {
+          name: 'Face Aesthetic',
+          path: '/plastic-surgery',
+          description: 'Facial enhancement procedures',
+          subItems: [
+            {
+              category: 'Facial Surgery',
+              items: [
+                { name: 'Rhinoplasty', path: '/plastic-surgery/face-aesthetic/rhinoplasty' },
+                { name: 'Face Lift', path: '/plastic-surgery/face-aesthetic/face-lift' },
+                { name: 'Dimple Creation', path: '/plastic-surgery/face-aesthetic/dimple-creation' },
+                { name: 'Eyelid Surgery', path: '/plastic-surgery/face-aesthetic/eyelid-surgery' },
+                { name: 'Face & Neck Lift', path: '/plastic-surgery/face-aesthetic/face-neck-lift' },
+                { name: 'Lip Augmentation', path: '/plastic-surgery/face-aesthetic/lip-augmentation' },
+                { name: 'Brow Lift', path: '/plastic-surgery/face-aesthetic/brow-lift' },
+                { name: 'Chin Implant', path: '/plastic-surgery/face-aesthetic/chin-implant' },
+                { name: 'Cheek Implant', path: '/plastic-surgery/face-aesthetic/cheek-implant' }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Body Contouring',
+          path: '/plastic-surgery',
+          description: 'Body shaping and contouring',
+          subItems: [
+            {
+              category: 'Body Procedures',
+              items: [
+                { name: 'Liposuction', path: '/plastic-surgery/body-contouring/liposuction' },
+                { name: 'Tummy Tuck', path: '/plastic-surgery/body-contouring/tummy-tuck' },
+                { name: 'Mommy Makeover', path: '/plastic-surgery/body-contouring/mommy-makeover' },
+                { name: 'Arm Lift', path: '/plastic-surgery/body-contouring/arm-lift' },
+                { name: 'Thigh Lift', path: '/plastic-surgery/body-contouring/thigh-lift' }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Breast Surgery',
+          path: '/plastic-surgery',
+          description: 'Breast procedures',
+          subItems: [
+            {
+              category: 'Breast Procedures',
+              items: [
+                { name: 'Breast Augmentation', path: '/plastic-surgery/breast-surgery/breast-augmentation' },
+                { name: 'Breast Reduction', path: '/plastic-surgery/breast-surgery/breast-reduction' },
+                { name: 'Breast Lump', path: '/plastic-surgery/breast-surgery/breast-lump' }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Reconstructive',
+          path: '/plastic-surgery',
+          description: 'Corrective procedures',
+          subItems: [
+            {
+              category: 'Reconstructive Surgery',
+              items: [
+                { name: 'Gynecomastia', path: '/plastic-surgery/reconstructive/gynecomastia' },
+                { name: 'Cyst Removal', path: '/plastic-surgery/reconstructive/cyst-removal' },
+                { name: 'Hand Surgery', path: '/plastic-surgery/reconstructive/hand-surgery' },
+                { name: 'Scar Revision', path: '/plastic-surgery/reconstructive/scar-revision' },
+                { name: 'Cleft Palate', path: '/plastic-surgery/reconstructive/cleft-palate' }
+              ]
+            }
+          ]
+        },
+        {
+          name: 'Sexual Wellness',
+          path: '/plastic-surgery',
+          description: 'Intimate wellness therapies',
+          subItems: [
+            {
+              category: 'Treatments',
+              items: [
+                { name: 'P-Shot®', path: '/plastic-surgery/sexual-wellness/p-shot' },
+                { name: 'O-Shot®', path: '/plastic-surgery/sexual-wellness/o-shot' }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    { name: 'Hair Transplant', path: '/treatments/hair-treatments/hair-loss/hair-transplant' },
+    { name: 'Concerns', path: '/concerns' },
+    { name: 'Results', path: '/results' },
+    { name: 'Contact', path: '/contact' }
+  ];
+
+  const NavLink = ({ item }: { item: NavItem }) => (
+    <div className="relative">
+      {item.hasDropdown ? (
+        <div
+          onMouseEnter={() => handleMouseEnter(item.name)}
+          onMouseLeave={handleMouseLeave}
+          className="relative"
+        >
+          <Link
+            href={item.path}
+            onClick={() => { setIsOpen(false); closeDropdown(); }}
+            className="flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300 text-gray-600 hover:text-[#C09A50]"
+          >
+            {item.name}
+            <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </Link>
+          {activeDropdown === item.name && (
+            <div
+              onMouseEnter={() => handleMouseEnter(item.name)}
+              onMouseLeave={handleMouseLeave}
+              className="absolute top-full left-0 mt-2 w-screen max-w-6xl bg-white rounded-lg shadow-xl border border-gray-200 py-6 px-6 z-50"
+            >
+              <div className="grid grid-cols-3 gap-8">
+                {item.dropdownItems?.map((dropdownItem, index) => (
+                  <div key={index} className="space-y-4">
+                    <Link
+                      href={dropdownItem.path}
+                      onClick={() => { setIsOpen(false); closeDropdown(); }}
+                      className="block group"
+                    >
+                      <div className="font-semibold text-gray-900 group-hover:text-[#C09A50] transition-colors">
+                        {dropdownItem.name}
+                      </div>
+                      <div className="text-sm text-gray-600 mt-1">{dropdownItem.description}</div>
+                    </Link>
+                    <div className="space-y-2">
+                      {dropdownItem.subItems?.map((subCategory, subIndex) => (
+                        <div key={subIndex} className="space-y-1">
+                          <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                            {subCategory.category}
+                          </div>
+                          {subCategory.items.map((subItem, itemIndex) => (
+                            <Link
+                              key={itemIndex}
+                              href={subItem.path}
+                              onClick={() => { setIsOpen(false); closeDropdown(); }}
+                              className="block text-sm text-gray-600 hover:text-[#C09A50] hover:bg-gray-50 px-2 py-1 rounded transition-colors"
+                            >
+                              {subItem.name}
+                            </Link>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <Link
+          href={item.path}
+          onClick={() => { setIsOpen(false); closeDropdown(); }}
+          className="block md:inline-block px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300 text-gray-600 hover:text-[#C09A50]"
+        >
+          {item.name}
+        </Link>
+      )}
+    </div>
+  );
+
+  const MobileNavLink = ({ item }: { item: NavItem }) => {
+    const isExpanded = expandedMobileItems[item.name];
+
+    return (
+      <div className="border-b border-gray-200 last:border-0">
+        {item.hasDropdown ? (
+          <div>
+            <div className="flex items-center justify-between">
+              <Link
+                href={item.path}
+                onClick={() => { setIsOpen(false); closeDropdown(); }}
+                className="block px-3 py-3 text-base font-medium text-gray-900 hover:text-[#C09A50] transition-colors flex-grow"
+              >
+                {item.name}
+              </Link>
+              <button
+                onClick={(e) => toggleMobileItem(item.name, e)}
+                className="p-3 focus:outline-none flex items-center justify-center text-gray-500 hover:text-[#C09A50]"
+              >
+                <svg className={`w-5 h-5 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+            {isExpanded && (
+              <div className="pl-4 pb-2 space-y-2 bg-gray-50/50">
+                {item.dropdownItems?.map((dropdownItem, index) => (
+                  <div key={index} className="space-y-1">
+                    <div className="px-3 py-2 text-sm font-bold text-gray-800">
+                      <Link
+                        href={dropdownItem.path}
+                        onClick={() => { setIsOpen(false); closeDropdown(); }}
+                        className="hover:text-[#C09A50]"
+                      >
+                        {dropdownItem.name}
+                      </Link>
+                    </div>
+                    {dropdownItem.subItems?.map((subCategory, subIndex) => (
+                      <div key={subIndex} className="ml-2 space-y-1 mb-2">
+                        <div className="text-xs font-semibold text-[#C09A50] uppercase tracking-wide px-3 py-1">
+                          {subCategory.category}
+                        </div>
+                        <div className="grid grid-cols-1 gap-1">
+                          {subCategory.items.map((subItem, itemIndex) => (
+                            <Link
+                              key={itemIndex}
+                              href={subItem.path}
+                              onClick={() => { setIsOpen(false); closeDropdown(); }}
+                              className="block px-4 py-1.5 text-sm text-gray-600 hover:text-[#C09A50] hover:bg-gray-100 rounded-md transition-colors"
+                            >
+                              {subItem.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <Link
+            href={item.path}
+            onClick={() => { setIsOpen(false); closeDropdown(); }}
+            className="block px-3 py-3 text-base font-medium text-gray-600 hover:text-[#C09A50] hover:bg-gray-50 rounded-md"
+          >
+            {item.name}
+          </Link>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <nav className="nav-enter bg-white/80 backdrop-blur-sm fixed w-full z-50 top-0 shadow-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
+          <div className="flex items-center">
+            <Link href="/home" className="flex items-center">
+              <img src="/logo.png" alt="Skin Win Clinic" className="h-10 w-auto object-contain" />
+            </Link>
+          </div>
+          <div className="hidden md:flex items-center">
+            <div className="flex items-baseline space-x-1">
+              {navItems.map(item => <NavLink key={item.name} item={item} />)}
+            </div>
+            <a
+              href="https://wa.me/919773311102?text=Hello%21+I%27d+like+to+book+a+consultation+at+Skin+Win+Clinic."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-4 bg-[#C09A50] text-white font-bold py-2 px-5 rounded-lg shadow-md hover:bg-[#B08A40] transition duration-300 text-sm"
+            >
+              Book Consultation
+            </a>
+          </div>
+          <div className="-mr-2 flex md:hidden">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              type="button"
+              className="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-[#C09A50] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#C09A50]"
+            >
+              <span className="sr-only">Open main menu</span>
+              {isOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+      {isOpen && (
+        <div className="md:hidden absolute top-20 left-0 w-full bg-white border-t border-gray-200 shadow-xl max-h-[calc(100vh-80px)] overflow-y-auto">
+          <div className="px-2 pt-2 pb-6 space-y-1 sm:px-3">
+            {navItems.map(item => <MobileNavLink key={item.name} item={item} />)}
+            <a
+              href="https://wa.me/919773311102?text=Hello%21+I%27d+like+to+book+a+consultation+at+Skin+Win+Clinic."
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => { setIsOpen(false); closeDropdown(); }}
+              className="block w-full text-center bg-[#C09A50] text-white font-bold mt-4 py-3 px-4 rounded-lg shadow-md hover:bg-[#B08A40] transition duration-300 text-sm"
+            >
+              Book Consultation
+            </a>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+};
+
+export default MegaMenu;
