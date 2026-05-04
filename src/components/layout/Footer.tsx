@@ -40,7 +40,7 @@ const Footer = () => (
         </div>
         <div className="col-span-2 sm:col-span-1 flex flex-col items-center sm:items-start mt-6 sm:mt-0">
           <div className="mb-6 mb-8 sm:mb-6">
-            <Link href="/home">
+            <Link href="/">
               <img src="/logo.png" alt="Skin Win Clinic" className="h-10 md:h-12 w-auto object-contain mx-auto sm:mx-0" />
             </Link>
           </div>

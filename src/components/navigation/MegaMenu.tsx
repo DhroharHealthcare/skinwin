@@ -423,7 +423,7 @@ const MegaMenu = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <Link href="/home" className="flex items-center">
+            <Link href="/" className="flex items-center">
               <img src="/logo.png" alt="Skin Win Clinic" className="h-10 w-auto object-contain" />
             </Link>
           </div>
