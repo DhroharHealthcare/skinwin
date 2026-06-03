@@ -28,7 +28,16 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${montserrat.variable} ${cormorant.variable} h-full antialiased`}>     
+    <html lang="en" className={`${montserrat.variable} ${cormorant.variable} h-full antialiased`}>
+      <head>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-H286ZDP071"></script>
+        <script>
+          {`window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-H286ZDP071');`}
+        </script>
+      </head>
       <body className={`${montserrat.variable} ${cormorant.variable} h-full`}>
         <PageLayout>
           {children}
