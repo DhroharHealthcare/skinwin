@@ -21,11 +21,15 @@ const cormorant = Cormorant_Garamond({
 export const metadata = {
   title: "Skin Win Clinic",
   description: "Premier Skin & Hair Clinic",
+  verification: {
+    google: "JMcRZB2hlLUX0IRgr4UtSXH2RLPyDaVfBwbKAs8egLE",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${montserrat.variable} ${cormorant.variable} h-full antialiased`}>
+     
       <body className={`${montserrat.variable} ${cormorant.variable} h-full`}>
         <PageLayout>
           {children}
