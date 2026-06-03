@@ -28,8 +28,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${montserrat.variable} ${cormorant.variable} h-full antialiased`}>
-     
+    <html lang="en" className={`${montserrat.variable} ${cormorant.variable} h-full antialiased`}>     
       <body className={`${montserrat.variable} ${cormorant.variable} h-full`}>
         <PageLayout>
           {children}
