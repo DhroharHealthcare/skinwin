@@ -1,7 +1,6 @@
 import { Montserrat, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import PageLayout from "@/components/layout/PageLayout";
-import CanonicalLink from "@/components/layout/CanonicalLink";
 
 const montserrat = Montserrat({
   variable: "--font-sans",
@@ -32,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${montserrat.variable} ${cormorant.variable} h-full antialiased`}>
       <head>
-        <CanonicalLink />
+        {/* <CanonicalLink /> */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-H286ZDP071"></script>
         <script>
           {`window.dataLayer = window.dataLayer || [];
